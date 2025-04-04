@@ -1,13 +1,68 @@
-body {
+/* Netflix-inspired global styles */
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #141414;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Utility classes */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Netflix red */
+.netflix-red {
+  color: #e50914;
+}
+
+/* Button styles */
+.btn {
+  display: inline-block;
+  background: #e50914;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.btn:hover {
+  background: #f40612;
+}
+
+/* Form controls */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+}
+
+.form-control:focus {
+  outline: none;
+  background-color: #454545;
 }

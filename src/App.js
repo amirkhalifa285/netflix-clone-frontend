@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ProfileProvider } from './contexts/ProfileContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Auth Pages
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import ProfileSelection from './pages/ProfileSelection';
 
 // Placeholder components (to be implemented later)
-const ProfileSelection = () => <div>Profile Selection Page</div>;
 const Home = () => <div>Home Page</div>;
 const TVShows = () => <div>TV Shows Page</div>;
 const Movies = () => <div>Movies Page</div>;
@@ -26,46 +27,60 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           
-          {/* Protected Routes */}
+          {/* Protected Routes with Profile Context */}
           <Route path="/profiles" element={
             <ProtectedRoute>
-              <ProfileSelection />
+              <ProfileProvider>
+                <ProfileSelection />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
           <Route path="/browse" element={
             <ProtectedRoute>
-              <Home />
+              <ProfileProvider>
+                <Home />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
           <Route path="/tv-shows" element={
             <ProtectedRoute>
-              <TVShows />
+              <ProfileProvider>
+                <TVShows />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
           <Route path="/movies" element={
             <ProtectedRoute>
-              <Movies />
+              <ProfileProvider>
+                <Movies />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
           <Route path="/new-popular" element={
             <ProtectedRoute>
-              <NewAndPopular />
+              <ProfileProvider>
+                <NewAndPopular />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
           <Route path="/my-list" element={
             <ProtectedRoute>
-              <MyList />
+              <ProfileProvider>
+                <MyList />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
           <Route path="/search" element={
             <ProtectedRoute>
-              <Search />
+              <ProfileProvider>
+                <Search />
+              </ProfileProvider>
             </ProtectedRoute>
           } />
           
@@ -77,8 +92,8 @@ const App = () => {
           } />
           
           {/* Default Routes */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/profiles" replace />} />
+          <Route path="*" element={<Navigate to="/profiles" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

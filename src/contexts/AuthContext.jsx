@@ -65,7 +65,8 @@ export const AuthProvider = ({ children }) => {
       }
       
       setCurrentUser(data.user);
-      navigate('/browse');
+      // Redirect to profiles page instead of browse
+      navigate('/profiles');
       return data;
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -83,6 +84,8 @@ export const AuthProvider = ({ children }) => {
       // Clear tokens
       sessionStorage.removeItem('token');
       localStorage.removeItem('token');
+      // Clear profile selection
+      sessionStorage.removeItem('currentProfileId');
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);

@@ -1,0 +1,202 @@
+/* Profile Selection Page Styles */
+.profile-selection-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #141414;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 176px;
+  }
+  
+  .profile-selection-title {
+    font-size: 3.5vw;
+    color: #fff;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  
+  .profiles-container {
+    display: flex;
+    justify-content: center;
+    gap: 67px;
+    flex-wrap: wrap;
+    max-width: 836px;
+    margin: 0 auto;
+  }
+  
+  .profile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .profile-avatar {
+    width: 144px;
+    height: 144px;
+    border-radius: 4px;
+    transition: border 0.2s ease;
+  }
+  
+  .profile-avatar:hover {
+    box-shadow: 0 0 0 2px white;
+  }
+  
+  .profile-name {
+    margin-top: 20px;
+    font-size: 1.2vw;
+    color: grey;
+    text-align: center;
+  }
+  
+  .profile-item:hover .profile-name {
+    color: white;
+  }
+  
+  .profile-delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+  }
+  
+  .profile-item:hover .profile-delete-button {
+    opacity: 1;
+  }
+  
+  .add-profile-button {
+    width: 144px;
+    height: 144px;
+    border-radius: 4px;
+    background-color: #2f2f2f;
+    color: grey;
+    font-size: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .add-profile-button:hover {
+    background-color: #444;
+  }
+  
+  .add-profile-name {
+    margin-top: 20px;
+    font-size: 1.2vw;
+    color: grey;
+    text-align: center;
+  }
+  
+  .profile-name-edit {
+    margin-top: 20px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 1.2vw;
+    text-align: center;
+    border-bottom: 1px solid white;
+    width: 100px;
+    padding: 5px;
+    outline: none;
+  }
+  
+  .error-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #e50914;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 4px;
+    z-index: 1000;
+    animation: fadeIn 0.3s, fadeOut 0.3s 3.7s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 1024px) {
+    .profiles-container {
+      max-width: 700px;
+      gap: 40px;
+    }
+    
+    .profile-selection-title {
+      font-size: 4vw;
+    }
+    
+    .profile-name, .add-profile-name {
+      font-size: 1.5vw;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .profiles-container {
+      max-width: 500px;
+      gap: 30px;
+    }
+    
+    .profile-avatar, .add-profile-button {
+      width: 120px;
+      height: 120px;
+    }
+    
+    .profile-selection-title {
+      font-size: 5vw;
+    }
+    
+    .profile-name, .add-profile-name {
+      font-size: 2vw;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .profile-selection-container {
+      padding-top: 100px;
+    }
+    
+    .profiles-container {
+      flex-direction: column;
+      gap: 25px;
+    }
+    
+    .profile-avatar, .add-profile-button {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .profile-selection-title {
+      font-size: 7vw;
+      margin-bottom: 30px;
+    }
+    
+    .profile-name, .add-profile-name {
+      font-size: 4vw;
+      margin-top: 10px;
+    }
+  }

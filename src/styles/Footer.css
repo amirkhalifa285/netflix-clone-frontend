@@ -1,0 +1,87 @@
+/* src/styles/Footer.css */
+.netflix-footer {
+    background-color: #141414;
+    color: #808080;
+    padding: 50px 60px 20px;
+    margin-top: 40px;
+  }
+  
+  .social-links {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .social-links a {
+    color: white;
+    font-size: 20px;
+  }
+  
+  .social-links a:hover {
+    color: #e50914;
+  }
+  
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 170px;
+    margin-bottom: 20px;
+  }
+  
+  .footer-column a {
+    color: #808080;
+    text-decoration: none;
+    font-size: 13px;
+  }
+  
+  .footer-column a:hover {
+    text-decoration: underline;
+  }
+  
+  .service-code-container {
+    margin-bottom: 20px;
+  }
+  
+  .service-code-btn {
+    background: transparent;
+    border: 1px solid #808080;
+    color: #808080;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .service-code-btn:hover {
+    color: white;
+  }
+  
+  .copyright {
+    font-size: 12px;
+    color: #808080;
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .netflix-footer {
+      padding: 40px 30px 20px;
+    }
+    
+    .footer-links {
+      flex-direction: column;
+    }
+    
+    .footer-column {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+  }
+  
+  /* Note: To use Font Awesome icons, make sure to include the Font Awesome CSS in your index.html */

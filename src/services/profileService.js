@@ -53,6 +53,16 @@ const profileService = {
   deleteProfile: async (profileId) => {
     const response = await apiClient.delete(`/api/profiles/${profileId}`);
     return response.data;
+  },
+
+  addToMyList: async (profileId, contentId) => {
+    const response = await apiClient.post(`/api/mylist/${profileId}`, { contentId });
+    return response.data;
+  },
+  
+  removeFromMyList: async (profileId, contentId) => {
+    const response = await apiClient.delete(`/api/mylist/${profileId}/${contentId}`);
+    return response.data;
   }
 };
 

@@ -2,14 +2,31 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useProfile } from '../../contexts/ProfileContext';
 import '../../styles/Profile.css';
 
+// Import the avatar images directly
+import Avatar1 from '../../assets/images/Avatar1.png';
+import Avatar2 from '../../assets/images/Avatar2.png';
+import Avatar3 from '../../assets/images/Avatar3.png';
+import Avatar4 from '../../assets/images/Avatar4.png';
+
 const ProfileItem = ({ profile }) => {
   const { selectProfile, updateProfile, deleteProfile } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(profile.name);
   const inputRef = useRef(null);
   
-  // Get avatar image based on avatar number
-  const avatarSrc = require(`../../assets/images/Avatar${profile.avatar}.png`);
+  // Get avatar number for current profile
+  const avatarNumber = profile.avatar || Math.floor(Math.random() * 4) + 1;
+  
+  // Map of avatar images
+  const avatarImages = {
+    1: Avatar1,
+    2: Avatar2,
+    3: Avatar3,
+    4: Avatar4
+  };
+  
+  // Get the avatar image source
+  const avatarSrc = avatarImages[avatarNumber];
   
   // Focus input when editing starts
   useEffect(() => {
@@ -82,12 +99,14 @@ const ProfileItem = ({ profile }) => {
   
   return (
     <div className="profile-item" onClick={handleProfileClick}>
-      <div className="profile-avatar-container">
-        <img 
-          src={avatarSrc} 
-          alt={`${profile.name}'s avatar`} 
-          className="profile-avatar" 
-        />
+      <div 
+        className="profile-avatar-container"
+        style={{
+          backgroundImage: `url(${avatarSrc})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
         <button 
           className="profile-delete-button" 
           onClick={handleDelete}

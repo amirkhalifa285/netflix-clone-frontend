@@ -9,8 +9,10 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ProfileSelection from './pages/ProfileSelection';
 
+// Main Pages
+import HomePage from './pages/HomePage';
+
 // Placeholder components (to be implemented later)
-const Home = () => <div>Home Page</div>;
 const TVShows = () => <div>TV Shows Page</div>;
 const Movies = () => <div>Movies Page</div>;
 const NewAndPopular = () => <div>New & Popular Page</div>;
@@ -39,7 +41,7 @@ const App = () => {
           <Route path="/browse" element={
             <ProtectedRoute>
               <ProfileProvider>
-                <Home />
+                <HomePage />
               </ProfileProvider>
             </ProtectedRoute>
           } />

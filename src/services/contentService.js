@@ -83,6 +83,16 @@ const contentService = {
   deleteReview: async (reviewId) => {
     const response = await apiClient.delete(`/api/reviews/${reviewId}`);
     return response.data;
+  },
+
+  getAllMovieContent: async (limit = 10) => {
+    const response = await apiClient.get('/api/content/movies', { params: { limit } });
+    return response.data;
+  },
+  
+  getAllTVContent: async (limit = 10) => {
+    const response = await apiClient.get('/api/content/tv', { params: { limit } });
+    return response.data;
   }
 };
 

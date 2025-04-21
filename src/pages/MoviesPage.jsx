@@ -1,4 +1,4 @@
-// src/pages/HomePage.jsx
+// src/pages/MoviesPage.jsx
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
@@ -7,9 +7,9 @@ import ContentModal from '../components/ContentModal';
 import Footer from '../components/Footer';
 import { useProfile } from '../contexts/ProfileContext';
 import contentService from '../services/contentService';
-import '../styles/HomePage.css';
+import '../styles/HomePage.css'; // Reuse styles
 
-const HomePage = () => {
+const MoviesPage = () => {
   // State for featured content (banner)
   const [featuredContent, setFeaturedContent] = useState([]);
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
@@ -23,6 +23,7 @@ const HomePage = () => {
   const [animationContent, setAnimationContent] = useState([]);
   const [myListItems, setMyListItems] = useState([]);
   const [actionContent, setActionContent] = useState([]);
+  const [popular, setPopular] = useState([]);
   
   // State for modal
   const [showModal, setShowModal] = useState(false);
@@ -37,7 +38,6 @@ const HomePage = () => {
   
   // Fetch all necessary data when profile is loaded
   useEffect(() => {
-    // Define fetchData function inside useEffect to avoid dependency issues
     const fetchData = async () => {
       if (!currentProfile) return;
       
@@ -45,43 +45,50 @@ const HomePage = () => {
         setLoading(true);
         setError('');
         
+        // Option 1: Use the combined movies endpoint
+        const movieContentRes = await contentService.getAllMovieContent();
+        if (movieContentRes.success && movieContentRes.data) {
+          setFeaturedContent(movieContentRes.data.featured || []);
+          setNewContent(movieContentRes.data.newest || []);
+          setTopContent(movieContentRes.data.mostReviewed || []);
+          setHighestRated(movieContentRes.data.highestRated || []);
+          setPopular(movieContentRes.data.popular || []);
+        }
+        
+        // Option 2: Or use individual endpoints with type filter
+        // We'll use this for the remaining categories
         const [
-          featuredRes,
           recommendationsRes,
-          newestRes,
-          mostReviewedRes,
-          highestRatedRes,
           animationRes,
           myListRes,
           actionRes,
           reviewedRes
         ] = await Promise.all([
-          contentService.getFeaturedContent(),
-          contentService.getRecommendations(currentProfile._id),
-          contentService.getNewestContent(),
-          contentService.getMostReviewedContent(),
-          contentService.getHighestRatedContent(),
-          contentService.getContentByGenre(16), // Animation genre (16)
+          contentService.getRecommendations(currentProfile._id, 'movie'),
+          contentService.getContentByGenre(16, 'movie'), // Animation genre (16)
           contentService.getMyList(currentProfile._id),
-          contentService.getContentByGenre(28), // Action genre (28)
-          contentService.getUserReviewedContent()
+          contentService.getContentByGenre(28, 'movie'), // Action genre (28)
+          contentService.getUserReviewedContent('movie')
         ]);
         
-        setFeaturedContent(featuredRes.data || []);
         setRecommendations(recommendationsRes.data || []);
-        setNewContent(newestRes.data || []);
-        setTopContent(mostReviewedRes.data || []);
-        setHighestRated(highestRatedRes.data || []);
         setAnimationContent(animationRes.data || []);
-        setMyListItems(myListRes.data || []);
+        
+        // Filter My List to only show movies
+        const movieMyList = (myListRes.data || []).filter(item => item.type === 'movie');
+        setMyListItems(movieMyList);
+        
         setActionContent(actionRes.data || []);
-        setReviewedContent(reviewedRes.data || []);
+        
+        // Filter reviewed content to only show movies
+        const movieReviews = (reviewedRes.data || []).filter(item => item.type === 'movie');
+        setReviewedContent(movieReviews);
         
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch content');
+        setError('Failed to fetch movie content');
         setLoading(false);
-        console.error('Error fetching content:', err);
+        console.error('Error fetching movie content:', err);
       }
     };
 
@@ -160,7 +167,7 @@ const HomePage = () => {
   
   return (
     <div className="homepage">
-      <Header />
+      <Header activePage="movies" />
       
       {currentFeatured && 
         <Banner 
@@ -172,56 +179,56 @@ const HomePage = () => {
       <div className="content-rows">
         {recommendations && recommendations.length > 0 &&
           <ContentRow 
-            title="Matched to You" 
+            title="Movies Matched to You" 
             content={recommendations} 
             onCardClick={handleContentClick} 
           />
         }
         {newContent && newContent.length > 0 &&
           <ContentRow 
-            title="New on Netflix" 
+            title="New Movies on Netflix" 
             content={newContent} 
             onCardClick={handleContentClick} 
           />
         }
         {topContent && topContent.length > 0 &&
           <ContentRow 
-            title="Top 10 in Country Today" 
+            title="Top 10 Movies Today" 
             content={topContent} 
             onCardClick={handleContentClick} 
           />
         }
         {reviewedContent && reviewedContent.length > 0 &&
           <ContentRow 
-            title="Your Reviews" 
+            title="Your Movie Reviews" 
             content={reviewedContent} 
             onCardClick={handleContentClick} 
           />
         }
         {highestRated && highestRated.length > 0 &&
           <ContentRow 
-            title="Top Rated" 
+            title="Top Rated Movies" 
             content={highestRated} 
             onCardClick={handleContentClick} 
           />
         }
         {animationContent && animationContent.length > 0 &&
           <ContentRow 
-            title="Animation" 
+            title="Animated Movies" 
             content={animationContent} 
             onCardClick={handleContentClick} 
           />
         }
         {actionContent && actionContent.length > 0 &&
           <ContentRow 
-            title="Action & Adventure" 
+            title="Action Movies" 
             content={actionContent} 
             onCardClick={handleContentClick} 
           />
         }
         {myListItems && myListItems.length > 0 &&
           <ContentRow 
-            title="My List" 
+            title="My List - Movies" 
             content={myListItems} 
             onCardClick={handleContentClick} 
           />
@@ -241,4 +248,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default MoviesPage;

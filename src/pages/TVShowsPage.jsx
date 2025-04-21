@@ -1,4 +1,4 @@
-// src/pages/HomePage.jsx
+// src/pages/TVShowsPage.jsx
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
@@ -7,9 +7,9 @@ import ContentModal from '../components/ContentModal';
 import Footer from '../components/Footer';
 import { useProfile } from '../contexts/ProfileContext';
 import contentService from '../services/contentService';
-import '../styles/HomePage.css';
+import '../styles/HomePage.css'; // Reuse the same styles
 
-const HomePage = () => {
+const TVShowsPage = () => {
   // State for featured content (banner)
   const [featuredContent, setFeaturedContent] = useState([]);
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
@@ -22,7 +22,8 @@ const HomePage = () => {
   const [highestRated, setHighestRated] = useState([]);
   const [animationContent, setAnimationContent] = useState([]);
   const [myListItems, setMyListItems] = useState([]);
-  const [actionContent, setActionContent] = useState([]);
+  const [popularContent, setPopularContent] = useState([]);
+  const [dramaContent, setDramaContent] = useState([]);
   
   // State for modal
   const [showModal, setShowModal] = useState(false);
@@ -37,7 +38,6 @@ const HomePage = () => {
   
   // Fetch all necessary data when profile is loaded
   useEffect(() => {
-    // Define fetchData function inside useEffect to avoid dependency issues
     const fetchData = async () => {
       if (!currentProfile) return;
       
@@ -45,43 +45,50 @@ const HomePage = () => {
         setLoading(true);
         setError('');
         
+        // Option 1: Use the combined TV shows endpoint
+        const tvContentRes = await contentService.getAllTVContent();
+        if (tvContentRes.success && tvContentRes.data) {
+          setFeaturedContent(tvContentRes.data.featured || []);
+          setNewContent(tvContentRes.data.newest || []);
+          setTopContent(tvContentRes.data.mostReviewed || []);
+          setHighestRated(tvContentRes.data.highestRated || []);
+          setPopularContent(tvContentRes.data.popular || []);
+        }
+        
+        // Option 2: Or use individual endpoints with type filter
+        // We'll use this for the remaining categories
         const [
-          featuredRes,
           recommendationsRes,
-          newestRes,
-          mostReviewedRes,
-          highestRatedRes,
           animationRes,
           myListRes,
-          actionRes,
+          dramaRes,
           reviewedRes
         ] = await Promise.all([
-          contentService.getFeaturedContent(),
-          contentService.getRecommendations(currentProfile._id),
-          contentService.getNewestContent(),
-          contentService.getMostReviewedContent(),
-          contentService.getHighestRatedContent(),
-          contentService.getContentByGenre(16), // Animation genre (16)
+          contentService.getRecommendations(currentProfile._id, 'tv'),
+          contentService.getContentByGenre(16, 'tv'), // Animation genre (16)
           contentService.getMyList(currentProfile._id),
-          contentService.getContentByGenre(28), // Action genre (28)
-          contentService.getUserReviewedContent()
+          contentService.getContentByGenre(18, 'tv'), // Drama genre (18)
+          contentService.getUserReviewedContent('tv')
         ]);
         
-        setFeaturedContent(featuredRes.data || []);
         setRecommendations(recommendationsRes.data || []);
-        setNewContent(newestRes.data || []);
-        setTopContent(mostReviewedRes.data || []);
-        setHighestRated(highestRatedRes.data || []);
         setAnimationContent(animationRes.data || []);
-        setMyListItems(myListRes.data || []);
-        setActionContent(actionRes.data || []);
-        setReviewedContent(reviewedRes.data || []);
+        
+        // Filter My List to only show TV shows
+        const tvMyList = (myListRes.data || []).filter(item => item.type === 'tv');
+        setMyListItems(tvMyList);
+        
+        setDramaContent(dramaRes.data || []);
+        
+        // Filter reviewed content to only show TV shows
+        const tvReviews = (reviewedRes.data || []).filter(item => item.type === 'tv');
+        setReviewedContent(tvReviews);
         
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch content');
+        setError('Failed to fetch TV show content');
         setLoading(false);
-        console.error('Error fetching content:', err);
+        console.error('Error fetching TV show content:', err);
       }
     };
 
@@ -160,7 +167,7 @@ const HomePage = () => {
   
   return (
     <div className="homepage">
-      <Header />
+      <Header activePage="tv-shows" />
       
       {currentFeatured && 
         <Banner 
@@ -172,56 +179,63 @@ const HomePage = () => {
       <div className="content-rows">
         {recommendations && recommendations.length > 0 &&
           <ContentRow 
-            title="Matched to You" 
+            title="TV Shows Matched to You" 
             content={recommendations} 
             onCardClick={handleContentClick} 
           />
         }
         {newContent && newContent.length > 0 &&
           <ContentRow 
-            title="New on Netflix" 
+            title="New TV Shows on Netflix" 
             content={newContent} 
             onCardClick={handleContentClick} 
           />
         }
         {topContent && topContent.length > 0 &&
           <ContentRow 
-            title="Top 10 in Country Today" 
+            title="Top 10 TV Shows Today" 
             content={topContent} 
             onCardClick={handleContentClick} 
           />
         }
         {reviewedContent && reviewedContent.length > 0 &&
           <ContentRow 
-            title="Your Reviews" 
+            title="Your TV Show Reviews" 
             content={reviewedContent} 
             onCardClick={handleContentClick} 
           />
         }
         {highestRated && highestRated.length > 0 &&
           <ContentRow 
-            title="Top Rated" 
+            title="Top Rated TV Shows" 
             content={highestRated} 
             onCardClick={handleContentClick} 
           />
         }
         {animationContent && animationContent.length > 0 &&
           <ContentRow 
-            title="Animation" 
+            title="Animated TV Shows" 
             content={animationContent} 
             onCardClick={handleContentClick} 
           />
         }
-        {actionContent && actionContent.length > 0 &&
+        {dramaContent && dramaContent.length > 0 &&
           <ContentRow 
-            title="Action & Adventure" 
-            content={actionContent} 
+            title="Drama TV Shows" 
+            content={dramaContent} 
+            onCardClick={handleContentClick} 
+          />
+        }
+        {popularContent && popularContent.length > 0 &&
+          <ContentRow 
+            title="Popular TV Shows" 
+            content={popularContent} 
             onCardClick={handleContentClick} 
           />
         }
         {myListItems && myListItems.length > 0 &&
           <ContentRow 
-            title="My List" 
+            title="My List - TV Shows" 
             content={myListItems} 
             onCardClick={handleContentClick} 
           />
@@ -241,4 +255,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default TVShowsPage;

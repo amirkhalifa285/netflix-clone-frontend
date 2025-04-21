@@ -11,10 +11,13 @@ import ProfileSelection from './pages/ProfileSelection';
 
 // Main Pages
 import HomePage from './pages/HomePage';
+import ReviewPage from './pages/ReviewPage';
+import TVShowsPage from './pages/TVShowsPage';
+import MoviesPage from './pages/MoviesPage';
 
 // Placeholder components (to be implemented later)
-const TVShows = () => <div>TV Shows Page</div>;
-const Movies = () => <div>Movies Page</div>;
+// const TVShows = () => <div>TV Shows Page</div>;
+// const Movies = () => <div>Movies Page</div>;
 const NewAndPopular = () => <div>New & Popular Page</div>;
 const MyList = () => <div>My List Page</div>;
 const Search = () => <div>Search Page</div>;
@@ -49,7 +52,7 @@ const App = () => {
           <Route path="/tv-shows" element={
             <ProtectedRoute>
               <ProfileProvider>
-                <TVShows />
+                <TVShowsPage />
               </ProfileProvider>
             </ProtectedRoute>
           } />
@@ -57,7 +60,7 @@ const App = () => {
           <Route path="/movies" element={
             <ProtectedRoute>
               <ProfileProvider>
-                <Movies />
+                <MoviesPage />
               </ProfileProvider>
             </ProtectedRoute>
           } />
@@ -82,6 +85,15 @@ const App = () => {
             <ProtectedRoute>
               <ProfileProvider>
                 <Search />
+              </ProfileProvider>
+            </ProtectedRoute>
+          } />
+          
+          {/* New Review Route */}
+          <Route path="/review/:contentId" element={
+            <ProtectedRoute>
+              <ProfileProvider>
+                <ReviewPage />
               </ProfileProvider>
             </ProtectedRoute>
           } />

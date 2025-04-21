@@ -24,6 +24,7 @@ const TVShowsPage = () => {
   const [myListItems, setMyListItems] = useState([]);
   const [popularContent, setPopularContent] = useState([]);
   const [dramaContent, setDramaContent] = useState([]);
+  const [scifiContent, setScifiContent] = useState([]);
   
   // State for modal
   const [showModal, setShowModal] = useState(false);
@@ -45,44 +46,68 @@ const TVShowsPage = () => {
         setLoading(true);
         setError('');
         
-        // Option 1: Use the combined TV shows endpoint
-        const tvContentRes = await contentService.getAllTVContent();
-        if (tvContentRes.success && tvContentRes.data) {
-          setFeaturedContent(tvContentRes.data.featured || []);
-          setNewContent(tvContentRes.data.newest || []);
-          setTopContent(tvContentRes.data.mostReviewed || []);
-          setHighestRated(tvContentRes.data.highestRated || []);
-          setPopularContent(tvContentRes.data.popular || []);
-        }
-        
-        // Option 2: Or use individual endpoints with type filter
-        // We'll use this for the remaining categories
-        const [
-          recommendationsRes,
-          animationRes,
-          myListRes,
-          dramaRes,
-          reviewedRes
-        ] = await Promise.all([
-          contentService.getRecommendations(currentProfile._id, 'tv'),
+        // Use Promise.allSettled to prevent one failure from failing all
+        const results = await Promise.allSettled([
+          contentService.getFeaturedContent('tv'),
+          // Skip recommendations for now
+          // contentService.getRecommendations(currentProfile._id, 'tv'),
+          contentService.getNewestContent('tv'),
+          contentService.getMostReviewedContent('tv'),
+          contentService.getHighestRatedContent('tv'),
+          contentService.getPopularContent('tv'),
           contentService.getContentByGenre(16, 'tv'), // Animation genre (16)
-          contentService.getMyList(currentProfile._id),
           contentService.getContentByGenre(18, 'tv'), // Drama genre (18)
+          contentService.getContentByGenre(10765, 'tv'), // Sci-Fi & Fantasy genre (10765)
+          contentService.getMyList(currentProfile._id),
           contentService.getUserReviewedContent('tv')
         ]);
         
-        setRecommendations(recommendationsRes.data || []);
-        setAnimationContent(animationRes.data || []);
+        // Process results safely
+        if (results[0].status === 'fulfilled') {
+          setFeaturedContent(results[0].value.data || []);
+        }
+        
+        // Use popular content for recommendations
+        if (results[4].status === 'fulfilled') {
+          setRecommendations(results[4].value.data || []);
+          setPopularContent(results[4].value.data || []);
+        }
+        
+        if (results[1].status === 'fulfilled') {
+          setNewContent(results[1].value.data || []);
+        }
+        
+        if (results[2].status === 'fulfilled') {
+          setTopContent(results[2].value.data || []);
+        }
+        
+        if (results[3].status === 'fulfilled') {
+          setHighestRated(results[3].value.data || []);
+        }
+        
+        if (results[5].status === 'fulfilled') {
+          setAnimationContent(results[5].value.data || []);
+        }
+        
+        if (results[6].status === 'fulfilled') {
+          setDramaContent(results[6].value.data || []);
+        }
+        
+        if (results[7].status === 'fulfilled') {
+          setScifiContent(results[7].value.data || []);
+        }
         
         // Filter My List to only show TV shows
-        const tvMyList = (myListRes.data || []).filter(item => item.type === 'tv');
-        setMyListItems(tvMyList);
-        
-        setDramaContent(dramaRes.data || []);
+        if (results[8].status === 'fulfilled') {
+          const tvMyList = (results[8].value.data || []).filter(item => item.type === 'tv');
+          setMyListItems(tvMyList);
+        }
         
         // Filter reviewed content to only show TV shows
-        const tvReviews = (reviewedRes.data || []).filter(item => item.type === 'tv');
-        setReviewedContent(tvReviews);
+        if (results[9].status === 'fulfilled') {
+          const tvReviews = (results[9].value.data || []).filter(item => item.type === 'tv');
+          setReviewedContent(tvReviews);
+        }
         
         setLoading(false);
       } catch (err) {
@@ -179,29 +204,50 @@ const TVShowsPage = () => {
       <div className="content-rows">
         {recommendations && recommendations.length > 0 &&
           <ContentRow 
-            title="TV Shows Matched to You" 
+            title="TV Shows For You" 
             content={recommendations} 
             onCardClick={handleContentClick} 
           />
         }
         {newContent && newContent.length > 0 &&
           <ContentRow 
-            title="New TV Shows on Netflix" 
+            title="New TV Shows" 
             content={newContent} 
+            onCardClick={handleContentClick} 
+          />
+        }
+        {popularContent && popularContent.length > 0 &&
+          <ContentRow 
+            title="Popular TV Shows" 
+            content={popularContent} 
             onCardClick={handleContentClick} 
           />
         }
         {topContent && topContent.length > 0 &&
           <ContentRow 
-            title="Top 10 TV Shows Today" 
+            title="Most Reviewed TV Shows" 
             content={topContent} 
             onCardClick={handleContentClick} 
           />
         }
-        {reviewedContent && reviewedContent.length > 0 &&
+        {dramaContent && dramaContent.length > 0 &&
           <ContentRow 
-            title="Your TV Show Reviews" 
-            content={reviewedContent} 
+            title="Drama Series" 
+            content={dramaContent} 
+            onCardClick={handleContentClick} 
+          />
+        }
+        {scifiContent && scifiContent.length > 0 &&
+          <ContentRow 
+            title="Sci-Fi & Fantasy" 
+            content={scifiContent} 
+            onCardClick={handleContentClick} 
+          />
+        }
+        {animationContent && animationContent.length > 0 &&
+          <ContentRow 
+            title="Animated Series" 
+            content={animationContent} 
             onCardClick={handleContentClick} 
           />
         }
@@ -212,24 +258,10 @@ const TVShowsPage = () => {
             onCardClick={handleContentClick} 
           />
         }
-        {animationContent && animationContent.length > 0 &&
+        {reviewedContent && reviewedContent.length > 0 &&
           <ContentRow 
-            title="Animated TV Shows" 
-            content={animationContent} 
-            onCardClick={handleContentClick} 
-          />
-        }
-        {dramaContent && dramaContent.length > 0 &&
-          <ContentRow 
-            title="Drama TV Shows" 
-            content={dramaContent} 
-            onCardClick={handleContentClick} 
-          />
-        }
-        {popularContent && popularContent.length > 0 &&
-          <ContentRow 
-            title="Popular TV Shows" 
-            content={popularContent} 
+            title="Your TV Show Reviews" 
+            content={reviewedContent} 
             onCardClick={handleContentClick} 
           />
         }

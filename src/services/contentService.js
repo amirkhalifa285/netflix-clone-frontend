@@ -3,8 +3,9 @@ import apiClient from './apiClient';
 
 const contentService = {
   // Get featured content for banner
-  getFeaturedContent: async () => {
-    const response = await apiClient.get('/api/content/featured');
+  getFeaturedContent: async (type) => {
+    const params = type ? { type } : {};
+    const response = await apiClient.get('/api/content/featured', { params });
     return response.data;
   },
   
@@ -50,8 +51,9 @@ const contentService = {
   },
   
   // Get user's reviewed content
-  getUserReviewedContent: async () => {
-    const response = await apiClient.get('/api/content/reviewed');
+  getUserReviewedContent: async (type) => {
+    const params = type ? { type } : {};
+    const response = await apiClient.get('/api/content/reviewed', { params });
     return response.data;
   },
   
@@ -62,9 +64,20 @@ const contentService = {
   },
   
   // Get personalized recommendations
-  getRecommendations: async (profileId) => {
-    const response = await apiClient.get(`/api/recommendations/${profileId}`);
-    return response.data;
+  getRecommendations: async (profileId, type) => {
+    try {
+      const params = type ? { type } : {};
+      console.log(`Requesting recommendations for profile: ${profileId}, type: ${type || 'all'}`);
+      const response = await apiClient.get(`/api/recommendations/${profileId}`, { params });
+      console.log(`Received ${response.data?.count || 0} recommendations`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+      // If recommendations fail, get popular content as fallback
+      console.log('Falling back to popular content');
+      const fallback = await contentService.getPopularContent(type);
+      return fallback;
+    }
   },
   
   // Create a review

@@ -45,17 +45,8 @@ const HomePage = () => {
         setLoading(true);
         setError('');
         
-        const [
-          featuredRes,
-          recommendationsRes,
-          newestRes,
-          mostReviewedRes,
-          highestRatedRes,
-          animationRes,
-          myListRes,
-          actionRes,
-          reviewedRes
-        ] = await Promise.all([
+        // Use Promise.allSettled to prevent one failure from failing all
+        const results = await Promise.allSettled([
           contentService.getFeaturedContent(),
           contentService.getRecommendations(currentProfile._id),
           contentService.getNewestContent(),
@@ -67,15 +58,42 @@ const HomePage = () => {
           contentService.getUserReviewedContent()
         ]);
         
-        setFeaturedContent(featuredRes.data || []);
-        setRecommendations(recommendationsRes.data || []);
-        setNewContent(newestRes.data || []);
-        setTopContent(mostReviewedRes.data || []);
-        setHighestRated(highestRatedRes.data || []);
-        setAnimationContent(animationRes.data || []);
-        setMyListItems(myListRes.data || []);
-        setActionContent(actionRes.data || []);
-        setReviewedContent(reviewedRes.data || []);
+        // Process results safely
+        if (results[0].status === 'fulfilled') {
+          setFeaturedContent(results[0].value.data || []);
+        }
+        
+        if (results[1].status === 'fulfilled') {
+          setRecommendations(results[1].value.data || []);
+        }
+        
+        if (results[2].status === 'fulfilled') {
+          setNewContent(results[2].value.data || []);
+        }
+        
+        if (results[3].status === 'fulfilled') {
+          setTopContent(results[3].value.data || []);
+        }
+        
+        if (results[4].status === 'fulfilled') {
+          setHighestRated(results[4].value.data || []);
+        }
+        
+        if (results[5].status === 'fulfilled') {
+          setAnimationContent(results[5].value.data || []);
+        }
+        
+        if (results[6].status === 'fulfilled') {
+          setMyListItems(results[6].value.data || []);
+        }
+        
+        if (results[7].status === 'fulfilled') {
+          setActionContent(results[7].value.data || []);
+        }
+        
+        if (results[8].status === 'fulfilled') {
+          setReviewedContent(results[8].value.data || []);
+        }
         
         setLoading(false);
       } catch (err) {
@@ -160,7 +178,7 @@ const HomePage = () => {
   
   return (
     <div className="homepage">
-      <Header />
+      <Header activePage="home" />
       
       {currentFeatured && 
         <Banner 

@@ -7,7 +7,7 @@ import ContentModal from '../components/ContentModal';
 import Footer from '../components/Footer';
 import { useProfile } from '../contexts/ProfileContext';
 import contentService from '../services/contentService';
-import '../styles/HomePage.css'; // Reuse styles
+import '../styles/HomePage.css'; // Reuse the same styles
 
 const MoviesPage = () => {
   // State for featured content (banner)
@@ -23,7 +23,7 @@ const MoviesPage = () => {
   const [animationContent, setAnimationContent] = useState([]);
   const [myListItems, setMyListItems] = useState([]);
   const [actionContent, setActionContent] = useState([]);
-  const [popular, setPopular] = useState([]);
+  const [popularContent, setPopularContent] = useState([]);
   
   // State for modal
   const [showModal, setShowModal] = useState(false);
@@ -45,44 +45,64 @@ const MoviesPage = () => {
         setLoading(true);
         setError('');
         
-        // Option 1: Use the combined movies endpoint
-        const movieContentRes = await contentService.getAllMovieContent();
-        if (movieContentRes.success && movieContentRes.data) {
-          setFeaturedContent(movieContentRes.data.featured || []);
-          setNewContent(movieContentRes.data.newest || []);
-          setTopContent(movieContentRes.data.mostReviewed || []);
-          setHighestRated(movieContentRes.data.highestRated || []);
-          setPopular(movieContentRes.data.popular || []);
-        }
-        
-        // Option 2: Or use individual endpoints with type filter
-        // We'll use this for the remaining categories
-        const [
-          recommendationsRes,
-          animationRes,
-          myListRes,
-          actionRes,
-          reviewedRes
-        ] = await Promise.all([
-          contentService.getRecommendations(currentProfile._id, 'movie'),
+        // Use Promise.allSettled to prevent one failure from failing all
+        const results = await Promise.allSettled([
+          contentService.getFeaturedContent('movie'),
+          // Skip recommendations for now
+          // contentService.getRecommendations(currentProfile._id, 'movie'),
+          contentService.getNewestContent('movie'),
+          contentService.getMostReviewedContent('movie'),
+          contentService.getHighestRatedContent('movie'),
+          contentService.getPopularContent('movie'),
           contentService.getContentByGenre(16, 'movie'), // Animation genre (16)
-          contentService.getMyList(currentProfile._id),
           contentService.getContentByGenre(28, 'movie'), // Action genre (28)
+          contentService.getContentByGenre(35, 'movie'), // Comedy genre (35)
+          contentService.getMyList(currentProfile._id),
           contentService.getUserReviewedContent('movie')
         ]);
         
-        setRecommendations(recommendationsRes.data || []);
-        setAnimationContent(animationRes.data || []);
+        // Process results safely
+        if (results[0].status === 'fulfilled') {
+          setFeaturedContent(results[0].value.data || []);
+        }
+        
+        // Use popular content for recommendations
+        if (results[4].status === 'fulfilled') {
+          setRecommendations(results[4].value.data || []);
+          setPopularContent(results[4].value.data || []);
+        }
+        
+        if (results[1].status === 'fulfilled') {
+          setNewContent(results[1].value.data || []);
+        }
+        
+        if (results[2].status === 'fulfilled') {
+          setTopContent(results[2].value.data || []);
+        }
+        
+        if (results[3].status === 'fulfilled') {
+          setHighestRated(results[3].value.data || []);
+        }
+        
+        if (results[5].status === 'fulfilled') {
+          setAnimationContent(results[5].value.data || []);
+        }
+        
+        if (results[6].status === 'fulfilled') {
+          setActionContent(results[6].value.data || []);
+        }
         
         // Filter My List to only show movies
-        const movieMyList = (myListRes.data || []).filter(item => item.type === 'movie');
-        setMyListItems(movieMyList);
-        
-        setActionContent(actionRes.data || []);
+        if (results[8].status === 'fulfilled') {
+          const movieMyList = (results[8].value.data || []).filter(item => item.type === 'movie');
+          setMyListItems(movieMyList);
+        }
         
         // Filter reviewed content to only show movies
-        const movieReviews = (reviewedRes.data || []).filter(item => item.type === 'movie');
-        setReviewedContent(movieReviews);
+        if (results[9].status === 'fulfilled') {
+          const movieReviews = (results[9].value.data || []).filter(item => item.type === 'movie');
+          setReviewedContent(movieReviews);
+        }
         
         setLoading(false);
       } catch (err) {
@@ -179,36 +199,36 @@ const MoviesPage = () => {
       <div className="content-rows">
         {recommendations && recommendations.length > 0 &&
           <ContentRow 
-            title="Movies Matched to You" 
+            title="Movies For You" 
             content={recommendations} 
             onCardClick={handleContentClick} 
           />
         }
         {newContent && newContent.length > 0 &&
           <ContentRow 
-            title="New Movies on Netflix" 
+            title="New Movies" 
             content={newContent} 
+            onCardClick={handleContentClick} 
+          />
+        }
+        {popularContent && popularContent.length > 0 &&
+          <ContentRow 
+            title="Popular Movies" 
+            content={popularContent} 
             onCardClick={handleContentClick} 
           />
         }
         {topContent && topContent.length > 0 &&
           <ContentRow 
-            title="Top 10 Movies Today" 
+            title="Most Reviewed Movies" 
             content={topContent} 
             onCardClick={handleContentClick} 
           />
         }
-        {reviewedContent && reviewedContent.length > 0 &&
+        {actionContent && actionContent.length > 0 &&
           <ContentRow 
-            title="Your Movie Reviews" 
-            content={reviewedContent} 
-            onCardClick={handleContentClick} 
-          />
-        }
-        {highestRated && highestRated.length > 0 &&
-          <ContentRow 
-            title="Top Rated Movies" 
-            content={highestRated} 
+            title="Action Movies" 
+            content={actionContent} 
             onCardClick={handleContentClick} 
           />
         }
@@ -219,10 +239,17 @@ const MoviesPage = () => {
             onCardClick={handleContentClick} 
           />
         }
-        {actionContent && actionContent.length > 0 &&
+        {highestRated && highestRated.length > 0 &&
           <ContentRow 
-            title="Action Movies" 
-            content={actionContent} 
+            title="Top Rated Movies" 
+            content={highestRated} 
+            onCardClick={handleContentClick} 
+          />
+        }
+        {reviewedContent && reviewedContent.length > 0 &&
+          <ContentRow 
+            title="Your Movie Reviews" 
+            content={reviewedContent} 
             onCardClick={handleContentClick} 
           />
         }

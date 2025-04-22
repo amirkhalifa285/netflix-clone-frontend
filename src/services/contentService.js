@@ -80,6 +80,30 @@ const contentService = {
     }
   },
   
+  // Get browse content
+  getBrowseContent: async () => {
+    try {
+      const { data } = await apiClient.get('/api/content/browse');
+      
+      // Validate the response structure
+      if (!data || !data.success || !data.data || !Array.isArray(data.data.content)) {
+        console.error('Invalid response structure:', data);
+        throw new Error('Invalid response structure');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error in getBrowseContent:', error);
+      return {
+        success: false,
+        data: {
+          content: [],
+          availableGenres: ['All Genres']
+        }
+      };
+    }
+  },
+  
   // Create a review
   createReview: async (data) => {
     const response = await apiClient.post('/api/reviews', data);
@@ -98,14 +122,42 @@ const contentService = {
     return response.data;
   },
 
-  getAllMovieContent: async (limit = 10) => {
-    const response = await apiClient.get('/api/content/movies', { params: { limit } });
-    return response.data;
+  getAllMovieContent: async () => {
+    try {
+      const { data } = await apiClient.get('/api/content/movies');
+      return data;
+    } catch (error) {
+      console.error('Error in getAllMovieContent:', error);
+      return {
+        success: false,
+        data: {
+          newest: [],
+          featured: [],
+          popular: [],
+          mostReviewed: [],
+          highestRated: []
+        }
+      };
+    }
   },
-  
-  getAllTVContent: async (limit = 10) => {
-    const response = await apiClient.get('/api/content/tv', { params: { limit } });
-    return response.data;
+
+  getAllTVContent: async () => {
+    try {
+      const { data } = await apiClient.get('/api/content/tv');
+      return data;
+    } catch (error) {
+      console.error('Error in getAllTVContent:', error);
+      return {
+        success: false,
+        data: {
+          newest: [],
+          featured: [],
+          popular: [],
+          mostReviewed: [],
+          highestRated: []
+        }
+      };
+    }
   }
 };
 

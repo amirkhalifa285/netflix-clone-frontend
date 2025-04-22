@@ -14,13 +14,11 @@ import HomePage from './pages/HomePage';
 import ReviewPage from './pages/ReviewPage';
 import TVShowsPage from './pages/TVShowsPage';
 import MoviesPage from './pages/MoviesPage';
+import SearchPage from './pages/SearchPage';
+import MyListPage from './pages/MyListPage';
+import NewAndPopularPage from './pages/NewAndPopularPage';
 
 // Placeholder components (to be implemented later)
-// const TVShows = () => <div>TV Shows Page</div>;
-// const Movies = () => <div>Movies Page</div>;
-const NewAndPopular = () => <div>New & Popular Page</div>;
-const MyList = () => <div>My List Page</div>;
-const Search = () => <div>Search Page</div>;
 const AdminDashboard = () => <div>Admin Dashboard</div>;
 
 const App = () => {
@@ -68,7 +66,7 @@ const App = () => {
           <Route path="/new-popular" element={
             <ProtectedRoute>
               <ProfileProvider>
-                <NewAndPopular />
+                <NewAndPopularPage />
               </ProfileProvider>
             </ProtectedRoute>
           } />
@@ -76,7 +74,7 @@ const App = () => {
           <Route path="/my-list" element={
             <ProtectedRoute>
               <ProfileProvider>
-                <MyList />
+                <MyListPage />
               </ProfileProvider>
             </ProtectedRoute>
           } />
@@ -84,7 +82,7 @@ const App = () => {
           <Route path="/search" element={
             <ProtectedRoute>
               <ProfileProvider>
-                <Search />
+                <SearchPage />
               </ProfileProvider>
             </ProtectedRoute>
           } />

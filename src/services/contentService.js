@@ -10,17 +10,26 @@ const contentService = {
   },
   
   // Get newest content
-  getNewestContent: async (type) => {
-    const params = type ? { type } : {};
-    const response = await apiClient.get('/api/content/newest', { params });
-    return response.data;
+  getNewestContent: async (type, limit = 50) => {
+    const params = type ? { type, limit } : { limit };
+    try {
+      const response = await apiClient.get('/api/content/newest', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching newest content:', error);
+      throw error;
+    }
   },
   
-  // Get most popular content
-  getPopularContent: async (type) => {
-    const params = type ? { type } : {};
-    const response = await apiClient.get('/api/content/popular', { params });
-    return response.data;
+  getPopularContent: async (type, limit = 50) => {
+    const params = type ? { type, limit } : { limit };
+    try {
+      const response = await apiClient.get('/api/content/popular', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching popular content:', error);
+      throw error;
+    }
   },
   
   // Get most reviewed content

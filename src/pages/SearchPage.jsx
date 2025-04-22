@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { Search as SearchIcon, Bell, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 import ContentCard from '../components/ContentCard';
+import ContentModal from '../components/ContentModal';
 import { useProfile } from '../contexts/ProfileContext';
 import contentService from '../services/contentService';
 import '../styles/SearchPage.css';
@@ -18,6 +18,10 @@ const SearchPage = () => {
   const [error, setError] = useState('');
   const [availableGenres, setAvailableGenres] = useState(['All Genres']);
   const { currentProfile } = useProfile();
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [selectedContent, setSelectedContent] = useState(null);
 
   const languages = ['All Languages', 'English', 'Spanish', 'French', 'German', 'Italian', 'Japanese', 'Korean'];
   const sortOptions = ['Suggestions For You', 'Year', 'Rating', 'Title'];
@@ -98,6 +102,47 @@ const SearchPage = () => {
     }
   };
 
+  const handleContentClick = async (content) => {
+    const fetchContentDetails = async (contentId) => {
+      try {
+        setLoading(true);
+        const response = await contentService.getContentById(contentId);
+        if (response && response.data) {
+          document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+          setSelectedContent(response.data);
+          setShowModal(true);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching content details:', err);
+        setLoading(false);
+      }
+    };
+    
+    // If we have full content details already, use them
+    // Otherwise fetch the details first
+    if (content && content._id) {
+      if (content.seasons || content.cast) {
+        // If content already has full details
+        document.body.style.overflow = 'hidden';
+        setSelectedContent(content);
+        setShowModal(true);
+      } else {
+        // If we need to fetch full details
+        fetchContentDetails(content._id);
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    document.body.style.overflow = ''; // Restore scrolling
+    setShowModal(false);
+    // Optionally clear selected content after a delay
+    setTimeout(() => {
+      setSelectedContent(null);
+    }, 300);
+  };
+
   const filterContent = () => {
     if (!allContent) return [];
 
@@ -172,7 +217,7 @@ const SearchPage = () => {
   };
 
   const renderContent = () => {
-    if (loading) {
+    if (loading && !showModal) {
       return <div className="search-page-no-results">Loading...</div>;
     }
 
@@ -192,7 +237,7 @@ const SearchPage = () => {
           <ContentCard 
             key={content._id || content.tmdbId}
             content={content}
-            onClick={() => console.log('Clicked:', content)}
+            onClick={handleContentClick}
           />
         ))}
       </div>
@@ -281,6 +326,14 @@ const SearchPage = () => {
 
         {renderContent()}
       </div>
+
+      {/* Content Modal */}
+      {showModal && selectedContent && (
+        <ContentModal 
+          content={selectedContent}
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 };

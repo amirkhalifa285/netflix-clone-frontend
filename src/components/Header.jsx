@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,16 +7,13 @@ import '../styles/Header.css';
 const Header = () => {
   const { logout, currentUser } = useAuth(); 
   
-  // Check if ProfileContext is available (it won't be in admin pages)
   let currentProfile = null;
   let profileContextAvailable = true;
   
   try {
-    // Try to use the useProfile hook
     const profileContext = useProfile();
     currentProfile = profileContext?.currentProfile;
   } catch (error) {
-    // If useProfile throws an error, the context is not available
     profileContextAvailable = false;
   }
   
@@ -45,7 +41,6 @@ const Header = () => {
 
   const isAdminPage = location.pathname.startsWith('/admin');
 
-  // Get avatar for current profile
   const getAvatarSrc = () => {
     if (currentProfile && currentProfile.avatar) {
       try {
@@ -55,7 +50,6 @@ const Header = () => {
       }
     }
     
-    // Fallback to a default avatar
     try {
       return require('../assets/images/Avatar1.png');
     } catch (error) {

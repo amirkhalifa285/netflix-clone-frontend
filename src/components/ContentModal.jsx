@@ -1,4 +1,3 @@
-// src/components/ContentModal.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext';
@@ -9,10 +8,7 @@ const ContentModal = ({ content, onClose }) => {
   const { addToMyList, removeFromMyList, currentProfile } = useProfile();
   const [isInMyList, setIsInMyList] = useState(false);
   
-  // Get trailer items
-  // eslint-disable-next-line no-mixed-operators
   const getTrailerItems = () => {
-    // If we have episode stills, use them for trailers
     if (content.type === 'tv' && content.seasons && content.seasons.length > 0) {
       const mainSeason = content.seasons.find(season => season.name !== 'Specials') || content.seasons[0];
       
@@ -52,7 +48,6 @@ const ContentModal = ({ content, onClose }) => {
   };
 
   useEffect(() => {
-    // Check if content is in user's my list
     if (currentProfile && currentProfile.myList && content) {
       const isInList = currentProfile.myList.some(item => item === content._id);
       console.log('Is content in list?', isInList);
@@ -79,7 +74,6 @@ const ContentModal = ({ content, onClose }) => {
   };
 
   const handleReviewClick = () => {
-    // Navigate to review page with content ID
     navigate(`/review/${content._id}`, {
       state: { content }
     });
@@ -91,7 +85,7 @@ const ContentModal = ({ content, onClose }) => {
 
   // Format runtime for episodes
   const formatRuntime = (minutes) => {
-    if (!minutes) return '52m'; // Default if not provided
+    if (!minutes) return '52m'; 
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return hours > 0 
@@ -105,7 +99,6 @@ const ContentModal = ({ content, onClose }) => {
       return [];
     }
 
-    // Get the main season (usually index 1, not 0 which is often "Specials")
     const mainSeason = content.seasons.find(season => season.name !== 'Specials') || content.seasons[0];
     
     if (!mainSeason || !mainSeason.episodes) {

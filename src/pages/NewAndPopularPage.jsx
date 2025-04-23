@@ -60,8 +60,6 @@ const NewAndPopularPage = () => {
 
                 setNewContent(newestArr);
                 setPopularContent(popularArr);
-                console.log('✅ newContent now has', newestArr.length, 'items');
-                console.log('✅ popularContent now has', popularArr.length, 'items')
 
                 setLoading(false);
             } catch (err) {

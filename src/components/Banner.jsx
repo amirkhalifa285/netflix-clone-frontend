@@ -1,4 +1,3 @@
-// src/components/Banner.jsx
 import React from 'react';
 
 const Banner = ({ content, onMoreInfo }) => {

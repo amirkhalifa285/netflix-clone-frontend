@@ -1,4 +1,3 @@
-// src/components/ContentRow.jsx
 import React from 'react';
 import ContentCard from './ContentCard';
 

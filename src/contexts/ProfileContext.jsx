@@ -68,7 +68,12 @@ export const ProfileProvider = ({ children }) => {
             return response.data;
         } catch (err) {
             console.error('Error creating profile:', err);
-            setError(err.response?.data?.message || 'Failed to create profile');
+            if (err.response && err.response.data && err.response.data.message) {
+                // Use the server's error message if available
+                setError(err.response.data.message);
+            } else {
+                setError('Failed to create profile');
+            }
             throw err;
         } finally {
             setLoading(false);
@@ -103,7 +108,12 @@ export const ProfileProvider = ({ children }) => {
             return response.data;
         } catch (err) {
             console.error('Error updating profile:', err);
-            setError(err.response?.data?.message || err.message || 'Failed to update profile');
+            if (err.response && err.response.data && err.response.data.message) {
+                // Use the server's error message if available
+                setError(err.response.data.message);
+            } else {
+                setError(err.message || 'Failed to update profile');
+            }
             throw err;
         } finally {
             setLoading(false);
@@ -128,7 +138,12 @@ export const ProfileProvider = ({ children }) => {
             }
         } catch (err) {
             console.error('Error deleting profile:', err);
-            setError(err.response?.data?.message || 'Failed to delete profile');
+            if (err.response && err.response.data && err.response.data.message) {
+                // Use the server's error message if available
+                setError(err.response.data.message);
+            } else {
+                setError('Failed to delete profile');
+            }
             throw err;
         } finally {
             setLoading(false);
@@ -159,7 +174,12 @@ export const ProfileProvider = ({ children }) => {
             return response;
         } catch (err) {
             console.error('Error adding to My List:', err);
-            setError('Failed to add to My List');
+            if (err.response && err.response.data && err.response.data.message) {
+                // Use the server's error message if available
+                setError(err.response.data.message);
+            } else {
+                setError('Failed to add to My List');
+            }
             throw err;
         } finally {
             setLoading(false);
@@ -185,7 +205,12 @@ export const ProfileProvider = ({ children }) => {
             return response;
         } catch (err) {
             console.error('Error removing from My List:', err);
-            setError('Failed to remove from My List');
+            if (err.response && err.response.data && err.response.data.message) {
+                // Use the server's error message if available
+                setError(err.response.data.message);
+            } else {
+                setError('Failed to remove from My List');
+            }
             throw err;
         } finally {
             setLoading(false);

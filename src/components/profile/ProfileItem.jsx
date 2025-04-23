@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useProfile } from '../../contexts/ProfileContext';
 import '../../styles/Profile.css';
 
-// Import the avatar images directly
 import Avatar1 from '../../assets/images/Avatar1.png';
 import Avatar2 from '../../assets/images/Avatar2.png';
 import Avatar3 from '../../assets/images/Avatar3.png';
@@ -14,10 +13,8 @@ const ProfileItem = ({ profile }) => {
   const [name, setName] = useState(profile.name);
   const inputRef = useRef(null);
   
-  // Get avatar number for current profile
   const avatarNumber = profile.avatar || Math.floor(Math.random() * 4) + 1;
   
-  // Map of avatar images
   const avatarImages = {
     1: Avatar1,
     2: Avatar2,
@@ -25,10 +22,8 @@ const ProfileItem = ({ profile }) => {
     4: Avatar4
   };
   
-  // Get the avatar image source
   const avatarSrc = avatarImages[avatarNumber];
   
-  // Focus input when editing starts
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
@@ -37,7 +32,7 @@ const ProfileItem = ({ profile }) => {
   }, [isEditing]);
   
   const handleNameClick = (e) => {
-    e.stopPropagation(); // Prevent profile selection when clicking name
+    e.stopPropagation();
     setIsEditing(true);
   };
   
@@ -55,11 +50,9 @@ const ProfileItem = ({ profile }) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       try {
-        // Only update if name has changed and meets length requirements
         if (name !== profile.name && name.length >= 2 && name.length <= 12) {
           await updateProfile(profile._id, name);
         } else if (name.length < 2 || name.length > 12) {
-          // Reset to original name if invalid
           setName(profile.name);
         }
         setIsEditing(false);
@@ -67,7 +60,6 @@ const ProfileItem = ({ profile }) => {
         console.error('Failed to update profile name:', err);
       }
     } else if (e.key === 'Escape') {
-      // Reset to original name and cancel editing
       setName(profile.name);
       setIsEditing(false);
     }
@@ -75,7 +67,6 @@ const ProfileItem = ({ profile }) => {
   
   const handleBlur = async () => {
     try {
-      // Only update if name has changed and meets length requirements
       if (name !== profile.name && name.length >= 2 && name.length <= 12) {
         await updateProfile(profile._id, name);
       } else {

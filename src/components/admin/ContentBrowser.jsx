@@ -1,5 +1,4 @@
-// src/components/admin/ContentBrowser.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import adminService from '../../services/adminService';
 
 const ContentBrowser = () => {
@@ -14,12 +13,7 @@ const ContentBrowser = () => {
   const [addingContentId, setAddingContentId] = useState(null);
   const [statusMessage, setStatusMessage] = useState('');
 
-  // Fetch trending content on component mount and when content type changes
-  useEffect(() => {
-    fetchTrendingContent();
-  }, [contentType]);
-
-  const fetchTrendingContent = async () => {
+  const fetchTrendingContent = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -30,7 +24,6 @@ const ContentBrowser = () => {
       if (response.success) {
         setTrendingContent(response.data || []);
         
-        // Set status message if provided
         if (response.message) {
           setStatusMessage(response.message);
         } else if (response.total === 0) {
@@ -47,7 +40,12 @@ const ContentBrowser = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [contentType]); // Include contentType as dependency
+
+  // Fixed useEffect with proper dependencies
+  useEffect(() => {
+    fetchTrendingContent();
+  }, [fetchTrendingContent]); // fetchTrendingContent is now properly included
 
   const handleSearch = async (e) => {
     e.preventDefault();

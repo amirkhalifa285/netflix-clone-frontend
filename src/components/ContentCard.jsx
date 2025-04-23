@@ -1,4 +1,3 @@
-// src/components/ContentCard.jsx
 import React from 'react';
 
 const ContentCard = ({ content, onClick }) => {

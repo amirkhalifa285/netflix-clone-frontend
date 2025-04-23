@@ -201,7 +201,7 @@ const ContentModal = ({ content, onClose }) => {
             <div className="detail-item">
               <span className="detail-label">Director:</span>
               <span className="detail-value">
-                {content.crew && content.crew.find(person => person.job === 'Director')?.name || 'Dave Boyle'}
+              {(content.crew && content.crew.find(person => person.job === 'Director')?.name) || 'Dave Boyle'}
               </span>
             </div>
             <div className="detail-item">

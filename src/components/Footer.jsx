@@ -18,40 +18,40 @@ const Footer = () => {
           <i className="fab fa-youtube"></i>
         </a>
       </div>
-      
+
       <div className="footer-links">
         <div className="footer-column">
-          <a href="#">Audio Description</a>
-          <a href="#">Investor Relations</a>
-          <a href="#">Privacy</a>
-          <a href="#">Contact Us</a>
+          <a href="https://help.netflix.com/en/node/100612">Audio Description</a>
+          <a href="https://ir.netflix.net">Investor Relations</a>
+          <a href="https://help.netflix.com/legal/privacy">Privacy</a>
+          <a href="https://help.netflix.com/contactus">Contact Us</a>
         </div>
-        
+
         <div className="footer-column">
-          <a href="#">Help Center</a>
-          <a href="#">Jobs</a>
-          <a href="#">Legal Notices</a>
-          <a href="#">Do Not Sell or Share My Personal Information</a>
+          <a href="https://help.netflix.com">Help Center</a>
+          <a href="https://jobs.netflix.com">Jobs</a>
+          <a href="https://help.netflix.com/legal/notices">Legal Notices</a>
+          <a href="https://www.netflix.com/privacy">Do Not Sell or Share My Personal Information</a>
         </div>
-        
+
         <div className="footer-column">
-          <a href="#">Gift Cards</a>
-          <a href="#">Netflix Shop</a>
-          <a href="#">Cookie Preferences</a>
-          <a href="#">Ad Choices</a>
+          <a href="https://www.netflix.com/gift-cards">Gift Cards</a>
+          <a href="https://www.netflix.shop">Netflix Shop</a>
+          <a href="https://www.netflix.com/account/CookiePreferences">Cookie Preferences</a>
+          <a href="https://www.netflix.com/ad-choices">Ad Choices</a>
         </div>
-        
+
         <div className="footer-column">
-          <a href="#">Media Center</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Corporate Information</a>
+          <a href="https://media.netflix.com">Media Center</a>
+          <a href="https://help.netflix.com/legal/termsofuse">Terms of Use</a>
+          <a href="https://help.netflix.com/legal/corpinfo">Corporate Information</a>
         </div>
       </div>
-      
+
       <div className="service-code-container">
         <button className="service-code-btn">Service Code</button>
       </div>
-      
+
       <div className="copyright">
         &copy; 1997-{new Date().getFullYear()} Netflix, Inc.
       </div>

@@ -89,6 +89,38 @@ const contentService = {
     }
   },
   
+  // Get browse content with available filters
+  getBrowseContent: async (limit = 100) => {
+    try {
+      const response = await apiClient.get('/api/content/browse', { params: { limit } });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching browse content:', error);
+      return {
+        success: false,
+        data: {
+          content: [],
+          availableGenres: ['All Genres'],
+          availableLanguages: ['All Languages']
+        }
+      };
+    }
+  },
+  
+  // Search content with filters
+  searchContent: async (params) => {
+    try {
+      const response = await apiClient.get('/api/content/search', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error searching content:', error);
+      return {
+        success: false,
+        data: []
+      };
+    }
+  },
+  
   // Create a review
   createReview: async (data) => {
     const response = await apiClient.post('/api/reviews', data);
@@ -108,13 +140,41 @@ const contentService = {
   },
 
   getAllMovieContent: async (limit = 10) => {
-    const response = await apiClient.get('/api/content/movies', { params: { limit } });
-    return response.data;
+    try {
+      const response = await apiClient.get('/api/content/movies', { params: { limit } });
+      return response.data;
+    } catch (error) {
+      console.error('Error in getAllMovieContent:', error);
+      return {
+        success: false,
+        data: {
+          newest: [],
+          featured: [],
+          popular: [],
+          mostReviewed: [],
+          highestRated: []
+        }
+      };
+    }
   },
   
   getAllTVContent: async (limit = 10) => {
-    const response = await apiClient.get('/api/content/tv', { params: { limit } });
-    return response.data;
+    try {
+      const response = await apiClient.get('/api/content/tv', { params: { limit } });
+      return response.data;
+    } catch (error) {
+      console.error('Error in getAllTVContent:', error);
+      return {
+        success: false,
+        data: {
+          newest: [],
+          featured: [],
+          popular: [],
+          mostReviewed: [],
+          highestRated: []
+        }
+      };
+    }
   }
 };
 

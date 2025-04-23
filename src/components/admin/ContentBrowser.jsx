@@ -12,6 +12,7 @@ const ContentBrowser = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [addingContentId, setAddingContentId] = useState(null);
+  const [statusMessage, setStatusMessage] = useState('');
 
   // Fetch trending content on component mount and when content type changes
   useEffect(() => {
@@ -22,11 +23,21 @@ const ContentBrowser = () => {
     try {
       setLoading(true);
       setError('');
+      setStatusMessage('');
       
       const response = await adminService.getTrendingContent(contentType);
       
-      if (response.success && response.data) {
-        setTrendingContent(response.data);
+      if (response.success) {
+        setTrendingContent(response.data || []);
+        
+        // Set status message if provided
+        if (response.message) {
+          setStatusMessage(response.message);
+        } else if (response.total === 0) {
+          setStatusMessage('No new content available to add.');
+        } else {
+          setStatusMessage(`Showing ${response.displayed} of ${response.total} new ${contentType === 'movie' ? 'movies' : 'TV shows'} not in your database.`);
+        }
       } else {
         setError('Failed to fetch trending content');
       }
@@ -48,11 +59,21 @@ const ContentBrowser = () => {
     try {
       setSearching(true);
       setError('');
+      setStatusMessage('');
       
       const response = await adminService.searchContent(searchQuery, contentType);
       
-      if (response.success && response.data) {
-        setSearchResults(response.data);
+      if (response.success) {
+        setSearchResults(response.data || []);
+        
+        // Set status message based on results
+        if (response.message) {
+          setStatusMessage(response.message);
+        } else if (response.total === 0) {
+          setStatusMessage(`No new results found for "${searchQuery}".`);
+        } else {
+          setStatusMessage(`Found ${response.displayed} new ${contentType === 'movie' ? 'movies' : 'TV shows'} for "${searchQuery}" that aren't in your database.`);
+        }
       } else {
         setError('No results found');
         setSearchResults([]);
@@ -75,6 +96,21 @@ const ContentBrowser = () => {
       
       if (response.success) {
         setSuccessMessage(`Successfully added "${response.data.title}" to the database!`);
+        
+        // Remove the added content from the display lists
+        setTrendingContent(prevContent => 
+          prevContent.filter(item => item.id !== tmdbId)
+        );
+        setSearchResults(prevResults => 
+          prevResults.filter(item => item.id !== tmdbId)
+        );
+        
+        // Update status message if no more content is left
+        if (searchResults.length === 1 && searchResults[0].id === tmdbId) {
+          setStatusMessage('All search results have been added to your database.');
+        } else if (trendingContent.length === 1 && trendingContent[0].id === tmdbId && searchResults.length === 0) {
+          setStatusMessage('All trending content has been added to your database.');
+        }
         
         // Clear success message after 3 seconds
         setTimeout(() => {
@@ -101,19 +137,19 @@ const ContentBrowser = () => {
     return date.toLocaleDateString();
   };
 
-  const ContentCard = ({ item }) => (
-    <div className="content-card">
-      <div className="content-poster">
+  const AdminContentCard = ({ item }) => (
+    <div className="admin-content-card">
+      <div className="admin-content-poster">
         <img src={getImageUrl(item.poster_path)} alt={item.title || item.name} />
       </div>
-      <div className="content-info">
-        <h3>{item.title || item.name}</h3>
-        <p className="release-date">
+      <div className="admin-content-info">
+        <h3 className="admin-content-title">{item.title || item.name}</h3>
+        <p className="admin-release-date">
           {formatDate(item.release_date || item.first_air_date)}
         </p>
-        <p className="overview">{item.overview?.substring(0, 150)}...</p>
+        <p className="admin-overview">{item.overview?.substring(0, 150)}...</p>
         <button 
-          className="add-content-btn"
+          className="admin-add-button"
           onClick={() => handleAddContent(item.id)}
           disabled={addingContentId === item.id}
         >
@@ -125,7 +161,7 @@ const ContentBrowser = () => {
 
   return (
     <div className="content-browser">
-      <h2>Browse & Add Content</h2>
+      <h2>Browse & Add New Content</h2>
       
       {successMessage && (
         <div className="success-message">
@@ -163,7 +199,7 @@ const ContentBrowser = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Search for ${contentType === 'movie' ? 'movies' : 'TV shows'}...`}
+            placeholder={`Search for ${contentType === 'movie' ? 'movies' : 'TV shows'} to add...`}
           />
           <button type="submit" disabled={searching}>
             {searching ? 'Searching...' : 'Search'}
@@ -171,32 +207,42 @@ const ContentBrowser = () => {
         </form>
       </div>
       
+      {statusMessage && (
+        <div className="admin-status-message">
+          {statusMessage}
+        </div>
+      )}
+      
       {/* Search Results Section */}
       {searchResults.length > 0 && (
-        <div className="content-section">
-          <h3>Search Results</h3>
-          <div className="content-grid">
+        <div className="admin-content-section">
+          <h3>Search Results - New Content to Add</h3>
+          <div className="admin-content-grid">
             {searchResults.map(item => (
-              <ContentCard key={item.id} item={item} />
+              <AdminContentCard key={item.id} item={item} />
             ))}
           </div>
         </div>
       )}
       
       {/* Trending Content Section */}
-      <div className="content-section">
-        <h3>{searching ? 'Trending Content' : `Trending ${contentType === 'movie' ? 'Movies' : 'TV Shows'}`}</h3>
+      <div className="admin-content-section">
+        <h3>
+          {searching ? 'Trending Content' : `New Trending ${contentType === 'movie' ? 'Movies' : 'TV Shows'} to Add`}
+        </h3>
         
         {loading ? (
           <div className="loading">Loading trending content...</div>
         ) : trendingContent.length > 0 ? (
-          <div className="content-grid">
+          <div className="admin-content-grid">
             {trendingContent.map(item => (
-              <ContentCard key={item.id} item={item} />
+              <AdminContentCard key={item.id} item={item} />
             ))}
           </div>
         ) : (
-          <p className="no-content">No trending content available</p>
+          <p className="no-content">
+            {statusMessage || 'No new trending content available to add.'}
+          </p>
         )}
       </div>
     </div>

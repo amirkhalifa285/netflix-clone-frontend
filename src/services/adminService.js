@@ -24,7 +24,7 @@ const adminService = {
     }
   },
   
-  // Get trending content from TMDB
+  // Get trending content from TMDB that's not in our database
   getTrendingContent: async (type = 'movie') => {
     try {
       const response = await apiClient.get(`/api/admin/tmdb/trending/${type}`);
@@ -35,7 +35,7 @@ const adminService = {
     }
   },
   
-  // Search content on TMDB
+  // Search content on TMDB that's not in our database
   searchContent: async (query, type = 'movie') => {
     try {
       const response = await apiClient.get('/api/admin/tmdb/search', {

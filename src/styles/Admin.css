@@ -292,139 +292,7 @@
     margin-bottom: 40px;
   }
   
-  .content-section h3,
-  .trending-movies h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #fff;
-    font-weight: bold;
-  }
-  
-  /* ===== CONTENT GRID STYLES - ENHANCED ===== */
-  .content-grid,
-  .trending-grid,
-  .movie-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* Force 2 cards per row */
-    gap: 30px !important;
-    margin-bottom: 30px !important;
-  }
-  
-  /* Target both types of content cards */
-  .content-card,
-  .movie-card,
-  .trending-movie {
-    position: relative !important;
-    background-color: #1a1a1a !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
-    display: flex !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
-    min-height: 280px !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
-    width: 100% !important;
-    margin: 0 !important;
-  }
-  
-  .content-card:hover,
-  .movie-card:hover,
-  .trending-movie:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4) !important;
-  }
-  
-  /* Fix poster/image area */
-  .content-poster,
-  .movie-poster,
-  .poster-container {
-    width: 180px !important;
-    min-width: 180px !important;
-    flex-shrink: 0 !important;
-    position: relative !important;
-    height: auto !important;
-  }
-  
-  .content-poster img,
-  .movie-poster img,
-  .poster-container img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-  }
-  
-  /* Fix content information area */
-  .content-info,
-  .movie-info,
-  .movie-details {
-    padding: 20px !important;
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-width: 0 !important;
-    overflow: hidden !important;
-  }
-  
-  .content-info h3,
-  .movie-info h3,
-  .movie-title {
-    font-size: 22px !important;
-    margin: 0 0 10px !important;
-    color: #fff !important;
-    font-weight: bold !important;
-  }
-  
-  .release-date,
-  .movie-date {
-    color: #999 !important;
-    font-size: 16px !important;
-    margin-bottom: 15px !important;
-  }
-  
-  .overview,
-  .movie-overview,
-  .movie-description {
-    color: #bbb !important;
-    font-size: 16px !important;
-    line-height: 1.6 !important;
-    flex: 1 !important;
-    margin-bottom: 20px !important;
-    /* Allow text to wrap with proper height */
-    display: -webkit-box !important;
-    -webkit-line-clamp: 4 !important;
-    line-clamp: 4 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-  }
-  
-  .add-content-btn,
-  .content-button,
-  .add-button {
-    background-color: #e50914 !important;
-    border: none !important;
-    color: #fff !important;
-    padding: 10px 16px !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 16px !important;
-    width: auto !important;
-    text-align: center !important;
-    align-self: flex-start !important;
-  }
-  
-  .add-content-btn:hover,
-  .content-button:hover,
-  .add-button:hover {
-    background-color: #f40612 !important;
-  }
-  
-  .add-content-btn:disabled,
-  .content-button:disabled,
-  .add-button:disabled {
-    background-color: #8c0e14 !important;
-    cursor: not-allowed !important;
-  }
-  
+  /* Loading, success and error messages */
   .loading {
     display: flex;
     justify-content: center;
@@ -506,13 +374,132 @@
     color: white;
   }
   
-  /* Responsive Adjustments */
+  /* ===== NEW CUSTOM ADMIN CONTENT STYLES ===== */
+  /* These styles use completely unique class names to avoid conflicts */
+  .admin-content-section {
+    margin-bottom: 40px;
+  }
+  
+  .admin-content-section h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+  }
+  
+  .admin-content-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .admin-content-card {
+    position: relative;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 280px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    margin: 0;
+  }
+  
+  .admin-content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .admin-content-poster {
+    width: 180px;
+    min-width: 180px;
+    flex-shrink: 0;
+    position: relative;
+    height: auto;
+  }
+  
+  .admin-content-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .admin-content-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+  
+  .admin-content-title {
+    font-size: 22px;
+    margin: 0 0 10px;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .admin-release-date {
+    color: #999;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .admin-overview {
+    color: #bbb;
+    font-size: 16px;
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .admin-add-button {
+    background-color: #e50914;
+    border: none;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    width: auto;
+    text-align: center;
+    align-self: flex-start;
+  }
+  
+  .admin-add-button:hover {
+    background-color: #f40612;
+  }
+  
+  .admin-add-button:disabled {
+    background-color: #8c0e14;
+    cursor: not-allowed;
+  }
+  
+  .admin-status-message {
+    background-color: #2d2d2d;
+    color: #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 4px solid #3a6a8e;
+    font-size: 16px;
+  }
+  
+  /* Responsive styles for admin content */
   @media (max-width: 1200px) {
-    /* Switch to single column on medium screens */
-    .content-grid,
-    .trending-grid,
-    .movie-grid {
-      grid-template-columns: 1fr !important;
+    .admin-content-grid {
+      grid-template-columns: 1fr;
     }
   }
   
@@ -546,24 +533,17 @@
   }
   
   @media (max-width: 600px) {
-    /* Adjust for very small screens */
-    .content-card,
-    .movie-card,
-    .trending-movie {
-      flex-direction: column !important;
-      height: auto !important;
+    .admin-content-card {
+      flex-direction: column;
+      height: auto;
     }
     
-    .content-poster,
-    .movie-poster,
-    .poster-container {
-      width: 100% !important;
-      height: 200px !important;
+    .admin-content-poster {
+      width: 100%;
+      height: 200px;
     }
     
-    .content-info,
-    .movie-info,
-    .movie-details {
-      width: 100% !important;
+    .admin-content-info {
+      width: 100%;
     }
   }

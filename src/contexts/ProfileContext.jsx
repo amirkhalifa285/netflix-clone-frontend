@@ -21,6 +21,11 @@ export const ProfileProvider = ({ children }) => {
                 const response = await profileService.getProfiles();
                 setProfiles(response.data);
 
+                const isAdminPage = window.location.pathname.startsWith('/admin');
+                if (isAdminPage) {
+                    setLoading(false);
+                    return;
+                }
                 // Check if there's a selected profile in session storage
                 const savedProfileId = sessionStorage.getItem('currentProfileId');
                 if (savedProfileId) {
@@ -44,7 +49,12 @@ export const ProfileProvider = ({ children }) => {
     const selectProfile = (profile) => {
         setCurrentProfile(profile);
         sessionStorage.setItem('currentProfileId', profile._id);
-        navigate('/browse'); // Redirect to homepage after profile selection
+        
+        // Don't redirect if on admin page
+        const isAdminPage = window.location.pathname.startsWith('/admin');
+        if (!isAdminPage) {
+            navigate('/browse'); // Only redirect to homepage if not on admin page
+        }
     };
 
     // Create a new profile

@@ -18,8 +18,8 @@ import SearchPage from './pages/SearchPage';
 import MyListPage from './pages/MyListPage';
 import NewAndPopularPage from './pages/NewAndPopularPage';
 
-// Placeholder components (to be implemented later)
-const AdminDashboard = () => <div>Admin Dashboard</div>;
+// Admin Dashboard
+import AdminDashboard from './pages/AdminDashboard';
 
 const App = () => {
   return (
@@ -96,10 +96,10 @@ const App = () => {
             </ProtectedRoute>
           } />
           
-          {/* Admin Routes */}
+          {/* Admin Routes - Now also wrapped in ProfileProvider */}
           <Route path="/admin" element={
             <ProtectedRoute adminOnly={true}>
-              <AdminDashboard />
+                <AdminDashboard />
             </ProtectedRoute>
           } />
           

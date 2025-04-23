@@ -11,7 +11,7 @@ const ContentRow = ({ title, content, onCardClick }) => {
       <div className="content-slider">
         {content.map((item, index) => (
           <ContentCard 
-            key={`${title}-${item._id || item.tmdbId || index}`} 
+            key={`${title}-${item._id || item.tmdbId || index}-${index}`} 
             content={item} 
             onClick={onCardClick} 
           />

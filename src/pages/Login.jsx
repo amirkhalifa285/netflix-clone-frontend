@@ -44,7 +44,12 @@ const Login = () => {
           password: formData.password
         };
         
-        await login(credentials, formData.rememberMe);
+        const userData = await login(credentials, formData.rememberMe);
+        
+        // Add explicit navigation based on role
+        if (userData && userData.user && userData.user.role === 'admin') {
+          window.location.href = '/admin'; // Force navigation to admin dashboard
+        }
       } catch (err) {
         console.error('Login error:', err);
       } finally {

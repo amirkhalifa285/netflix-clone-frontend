@@ -35,8 +35,9 @@
   
   .content-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 items per row by default */
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     gap: 16px;
+    grid-auto-rows: 1fr;
   }
   
   .grid-item {

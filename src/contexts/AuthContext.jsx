@@ -20,8 +20,16 @@ export const AuthProvider = ({ children }) => {
         const token = sessionStorage.getItem('token') || localStorage.getItem('token');
         
         if (token) {
-          const userData = await authService.getCurrentUser();
-          setCurrentUser(userData);
+          const apiResponse = await authService.getCurrentUser();
+          setCurrentUser(apiResponse.data);
+          
+          // Redirect admin users if they're on the homepage or profiles page
+          if (apiResponse.role === 'admin') {
+            const currentPath = window.location.pathname;
+            if (currentPath === '/' || currentPath === '/profiles') {
+              navigate('/admin');
+            }
+          }
         }
       } catch (err) {
         console.error('Authentication check failed:', err);
@@ -34,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkLoggedIn();
-  }, []);
+  }, [navigate]);
 
   const register = async (userData) => {
     try {
@@ -65,8 +73,14 @@ export const AuthProvider = ({ children }) => {
       }
       
       setCurrentUser(data.user);
-      // Redirect to profiles page instead of browse
-      navigate('/profiles');
+      
+      // Redirect based on user role
+      if (data.user.role === 'admin') {
+        navigate('/admin'); // Admin users go to admin dashboard
+      } else {
+        navigate('/profiles'); // Regular users go to profile selection
+      }
+      
       return data;
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -84,8 +98,6 @@ export const AuthProvider = ({ children }) => {
       // Clear tokens
       sessionStorage.removeItem('token');
       localStorage.removeItem('token');
-      // Clear profile selection
-      sessionStorage.removeItem('currentProfileId');
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);

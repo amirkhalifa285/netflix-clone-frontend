@@ -38,8 +38,12 @@ const MyListPage = () => {
         setLoading(true);
         setError('');
         
-        const response = await contentService.getMyList(currentProfile._id);
-        setMyListContent(response.data || []);
+          const response = await contentService.getMyList(currentProfile._id);
+          // setMyListContent(response.data || []);
+          const myListArr = Array.isArray(response.data)
+              ? response.data
+              : [];
+          setMyListContent(myListArr);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch your list');

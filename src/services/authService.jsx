@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://netflix-clone-backend-bgis.onrender.com';
 
 // Create axios instance
 const apiClient = axios.create({
